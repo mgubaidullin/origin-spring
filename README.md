@@ -8,6 +8,7 @@ Docker, Git
 docker build --target rest -t origin/rest .
 docker build --target aggregator -t origin/aggregator .
 docker build --target storage -t origin/storage .
+docker build -f cassandra/Dockerfile -t origin/cassandra cassandra
 ```
 
 ### Run in Docker Compose
