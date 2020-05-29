@@ -15,7 +15,9 @@ public class AggregatorRoute extends EndpointRouteBuilder {
     public void configure() throws Exception {
 
         errorHandler(deadLetterChannel(kafka("dead-letter-queue").getUri())
-                .useOriginalMessage().maximumRedeliveries(5).redeliveryDelay(5000));
+                .log("${headers}")
+                .log("${body}")
+                .useOriginalMessage().maximumRedeliveries(5).redeliveryDelay(1000));
 
         from(kafka("words"))
                 .log("Aggregating word with key ${headers.kafka.KEY}")

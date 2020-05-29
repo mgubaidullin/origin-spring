@@ -1,4 +1,4 @@
-package org.example.rest;
+package org.example.rest.word;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

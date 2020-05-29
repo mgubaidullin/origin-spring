@@ -4,17 +4,21 @@ services:
   rest:
     container_name: rest
     image: origin/rest:latest
+    restart: always
     environment:
       BOOTSTRAP_ADDRESS: kafka:29092
+      CASSANDRA: cassandra
     ports:
       - "8080:8080"
     depends_on:
       - kafka
+      - cassandra
     networks:
       - spring
 
   aggregator:
     container_name: aggregator
+    restart: always
     image: origin/aggregator:latest
     environment:
       CAMEL_COMPONENT_KAFKA_BROKERS: kafka:29092
@@ -26,6 +30,7 @@ services:
 
   storage:
     container_name: storage
+    restart: always
     image: origin/storage:latest
     environment:
       CAMEL_COMPONENT_KAFKA_BROKERS: kafka:29092

@@ -1,4 +1,4 @@
-package org.example.rest;
+package org.example.rest.word;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
