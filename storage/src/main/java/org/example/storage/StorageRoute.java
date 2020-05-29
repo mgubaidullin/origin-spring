@@ -12,11 +12,16 @@ public class StorageRoute extends EndpointRouteBuilder {
     private @Value("${cassandra}")
     String cassandra;
 
+    private final String CQL = "insert into sentences(key, sentence) values (?, ?)";
+
     public void configure() throws Exception {
-        String CQL = "insert into sentences(key, sentence) values (?, ?)";
+
+        errorHandler(deadLetterChannel(kafka("dead-letter-queue").getUri())
+                .useOriginalMessage().maximumRedeliveries(5).redeliveryDelay(5000));
 
         from(kafka("sentences"))
+                .log("Storing sentence with key ${headers.kafka.KEY}")
                 .setBody(constant(List.of(header("kafka.KEY"), body())))
-                .to(cql(cassandra + "/origin?cql=" + CQL));
+                .toD(cql(cassandra + "/origin?cql=" + CQL));
     }
 }
