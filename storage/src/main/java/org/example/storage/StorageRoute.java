@@ -21,8 +21,8 @@ public class StorageRoute extends EndpointRouteBuilder {
 
         getContext().getRegistry().bind("clusterRef", clusterRef);
 
-//        errorHandler(deadLetterChannel(kafka("dead-letter-queue").getUri()).logExhausted(true)
-//                .useOriginalMessage().maximumRedeliveries(5).redeliveryDelay(1000));
+        errorHandler(deadLetterChannel(kafka("dead-letter-queue").getUri()).logExhausted(true)
+                .useOriginalMessage().maximumRedeliveries(5).redeliveryDelay(1000));
 
         from(kafka("sentences").autoCommitEnable(false).allowManualCommit(true))
                 .log("Storing sentence with key ${headers.kafka.KEY}")
