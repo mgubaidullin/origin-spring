@@ -1,11 +1,11 @@
 package org.example.rest.sentence;
 
+import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rx.Single;
-import rx.schedulers.Schedulers;
 
 import java.util.List;
 
@@ -14,10 +14,12 @@ import java.util.List;
 public class SentenceRestController {
 
     @Autowired
-    private SentenceService sentenceService;
+    private ProducerTemplate producer;
+
 
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Single<ResponseEntity<List<Sentence>>> get(@RequestParam String sentence) {
-        return sentenceService.searchSentence(sentence).subscribeOn(Schedulers.io()).map(key -> ResponseEntity.ok(key));
+    public Single<ResponseEntity<List>> get(@RequestParam String sentence) {
+        return Single.from(producer.asyncRequestBody("direct:req", sentence, List.class))
+                .map(list -> ResponseEntity.ok(list));
     }
 }

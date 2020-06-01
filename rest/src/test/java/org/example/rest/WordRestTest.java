@@ -44,6 +44,12 @@ public class WordRestTest {
         Cluster cluster = cassandra.getCluster();
         try(Session session = cluster.connect()) {
             session.execute("CREATE KEYSPACE IF NOT EXISTS origin WITH replication = {'class':'SimpleStrategy','replication_factor':'1'};");
+            session.execute("CREATE TABLE IF NOT EXISTS origin.sentences ( key varchar,sentence varchar, PRIMARY KEY (key) );");
+            session.execute("CREATE CUSTOM INDEX search_index ON origin.sentences (sentence) USING 'org.apache.cassandra.index.sasi.SASIIndex'\n" +
+                    "WITH OPTIONS = {\n" +
+                    "'mode': 'CONTAINS',\n" +
+                    "'analyzer_class': 'org.apache.cassandra.index.sasi.analyzer.NonTokenizingAnalyzer',\n" +
+                    "'case_sensitive': 'false'};\n");
         }
     }
 
